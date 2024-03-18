@@ -1,0 +1,782 @@
+openapi: 3.0.3
+info:
+  title: Swagger API IPAM - OpenAPI 3.0
+  description: |-
+    Service de Gestion Réseau (IPAM) développé dans le cadre de la SAE401 parcours DevCloud<br>
+    BUT Réseaux et Télécommunications 2ème année, IUT Saint-Malo
+  version: 1.0.0
+servers:
+  - url: A modifier (URL API ?)
+tags:
+  - name: group
+    description: Networks tree groups
+paths:
+  /address:
+   patch:
+     tags:
+       - address
+     summary: Update an existing address
+     description: Update an existing address by Id
+     operationId: updateAddress
+     requestBody:
+       description: Update an existent address in the list
+       content:
+         application/json:
+           schema:
+             $ref: '#/components/schemas/Address'
+         application/xml:
+           schema:
+             $ref: '#/components/schemas/Address'
+         application/x-www-form-urlencoded:
+           schema:
+             $ref: '#/components/schemas/Address'
+       required: true
+     responses:
+       '200':
+         description: Successful operation
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/Address'
+           application/xml:
+             schema:
+               $ref: '#/components/schemas/Address'
+       '400':
+         description: Invalid ID supplied
+       '404':
+         description: Address not found
+       '422':
+         description: Validation exception
+     security:
+       - ipam_auth:
+           - write:address
+           - read:address
+   post:
+     tags:
+       - address
+     summary: Add a new address to the list
+     description: Add a new address to the list
+     operationId: addAddress
+     requestBody:
+       description: Create a new address in the list
+       content:
+         application/json:
+           schema:
+             $ref: '#/components/schemas/Address'
+         application/xml:
+           schema:
+             $ref: '#/components/schemas/Address'
+         application/x-www-form-urlencoded:
+           schema:
+             $ref: '#/components/schemas/Address'
+       required: true
+     responses:
+       '200':
+         description: Successful operation
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/Address'
+           application/xml:
+             schema:
+               $ref: '#/components/schemas/Address'
+       '400':
+         description: Invalid ID supplied
+       '422':
+         description: Validation exception
+     security:
+       - ipam_auth:
+           - write:address
+           - read:address
+  /address/findByAddress:
+   get:
+     tags:
+       - address
+     summary: Finds Address by Address
+     description: Multiple status values can be provided with comma separated strings
+     operationId: findAddressById
+     parameters:
+       - name: address
+         in: query
+         description: Address values that need to be considered for filter
+         required: true
+         explode: false
+         schema:
+           type: string
+           #default: "192.168.0.1"
+     responses:
+       '200':
+         description: successful operation
+         content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 $ref: '#/components/schemas/Address'
+           application/xml:
+             schema:
+               type: array
+               items:
+                 $ref: '#/components/schemas/Address'
+       '400':
+         description: Invalid Id value
+     security:
+       - ipam_auth:
+           - write:address
+           - read:address
+  /address/{addressId}:
+   get:
+     tags:
+       - address
+     summary: Find address by ID
+     description: Returns a single address
+     operationId: getAddressById
+     parameters:
+       - name: addressId
+         in: path
+         description: ID of address to return
+         required: true
+         schema:
+           type: integer
+           format: int64
+     responses:
+       '200':
+         description: successful operation
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/Address'
+           application/xml:
+             schema:
+               $ref: '#/components/schemas/Address'
+       '400':
+         description: Invalid ID supplied
+       '404':
+         description: Address not found
+     security:
+       - api_key: []
+       - ipam_auth:
+           - write:address
+           - read:address
+   delete:
+     tags:
+       - address
+     summary: Deletes an address
+     description: delete an address
+     operationId: deleteAddress
+     parameters:
+       - name: api_key
+         in: header
+         description: ''
+         required: false
+         schema:
+           type: string
+       - name: addressId
+         in: path
+         description: Address id to delete
+         required: true
+         schema:
+           type: integer
+           format: int64
+     responses:
+       '400':
+         description: Invalid address value
+     security:
+       - ipam_auth:
+           - write:address
+           - read:address
+  /subnet:
+    patch:
+      tags:
+        - subnet
+      summary: Update an existing subnet
+      description: Update an existing subnet by Id
+      operationId: updateSubnet
+      requestBody:
+        description: Update an existent subnet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subnet'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Subnet'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Subnet'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subnet'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Subnet'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Subnet not found
+        '422':
+          description: Validation exception
+      security:
+        - ipam_auth:
+            - write:subnets
+            - read:subnets
+    post:
+      tags:
+        - subnet
+      summary: Add a new subnet to the store
+      description: Add a new subnet to the store
+      operationId: addSubnet
+      requestBody:
+        description: Create a new subnet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subnet'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Subnet'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Subnet'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subnet'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Subnet'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+      security:
+        - ipam_auth:
+            - write:subnets
+            - read:subnets
+  /subnet/findByAddress:
+    get:
+      tags:
+        - subnet
+      summary: Finds Subnets by address
+      description: Subnet search using an address
+      operationId: findSubnetsByAddress
+      parameters:
+        - name: address
+          in: query
+          description: Status values that need to be considered for filter
+          required: true
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subnet'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subnet'
+        '400':
+          description: Invalid status value
+      security:
+        - ipam_auth:
+            - write:subnets
+            - read:subnets
+  /subnet/findByMask:
+    get:
+      tags:
+        - subnet
+      summary: Finds Subnets by mask
+      description: Multiple masks can be provided with comma separated strings. Use mask8, mask16, mask24 for testing.
+      operationId: findSubnetsByMasks
+      parameters:
+        - name: masks
+          in: query
+          description: Masks to filter by
+          required: true
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subnet'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subnet'
+        '400':
+          description: Invalid mask value
+      security:
+        - ipam_auth:
+            - write:subnets
+            - read:subnets
+  /subnet/findByVlanid:
+    get:
+      tags:
+        - subnet
+      summary: Finds Subnets by vlan
+      description: Vlans are searched by being set as parameters
+      operationId: findSubnetsByVlanids
+      parameters:
+        - name: vlans
+          in: query
+          description: Vlans to filter by
+          required: true
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subnet'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subnet'
+        '400':
+          description: Invalid vlan value
+      security:
+        - ipam_auth:
+            - write:subnets
+            - read:subnets
+  /subnet/{subnetId}:
+    get:
+      tags:
+        - subnet
+      summary: Find subnet by ID
+      description: Returns a single subnet
+      operationId: getSubnetById
+      parameters:
+        - name: subnetId
+          in: path
+          description: ID of subnet to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subnet'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Subnet'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Subnet not found
+      security:
+        - api_key: []
+        - ipam_auth:
+            - write:subnets
+            - read:subnets
+    delete:
+      tags:
+        - subnet
+      summary: Deletes a subnet
+      description: delete a subnet
+      operationId: deleteSubnet
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: subnetId
+          in: path
+          description: Subnet id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid pet value
+      security:
+        - ipam_auth:
+            - write:subnets
+            - read:subnets
+  /group:
+    patch:
+      tags:
+        - group
+      summary: Update an existing group
+      description: Update an existing group by Id
+      operationId: updateGroup
+      requestBody:
+        description: Update an existent group in the tree
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Group'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Group'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Group not found
+        '422':
+          description: Validation exception
+      security:
+        - ipam_auth:
+            - write:group
+            - read:group
+    post:
+      tags:
+        - group
+      summary: Add a new group to the tree
+      description: Add a new group to the tree
+      operationId: addGroup
+      requestBody:
+        description: Create a new group in the tree
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Group'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Group'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+      security:
+        - ipam_auth:
+            - write:group
+            - read:group
+  /group/{groupId}:
+    get:
+      tags:
+        - group
+      summary: Find group by ID
+      description: Returns a single group
+      operationId: getGroupById
+      parameters:
+        - name: groupId
+          in: path
+          description: ID of group to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Group not found
+      security:
+        - api_key: []
+        - ipam_auth:
+            - write:group
+            - read:group
+    delete:
+      tags:
+        - group
+      summary: Deletes a group
+      description: delete a group
+      operationId: deleteGroup
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: groupId
+          in: path
+          description: Group id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid pet value
+      security:
+        - ipam_auth:
+            - write:group
+            - read:group
+  /group/findByName:
+    get:
+      tags:
+        - group
+      summary: Find Group by name
+      description: Provide the name of the group you want to get
+      operationId: findGroupByName
+      parameters:
+        - name: name
+          in: query
+          description: Name of the group
+          required: true
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid tag value
+      security:
+        - ipam_auth:
+            - write:group
+            - read:group
+  /group/findByParent:
+    get:
+      tags:
+        - group
+      summary: Find Group by parent name
+      description: Provide the name of the group you want to get
+      operationId: findGroupByParent
+      parameters:
+        - name: parent
+          in: query
+          description: Name of the parent group
+          required: true
+          explode: false
+          schema:
+            type: object
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid tag value
+      security:
+        - ipam_auth:
+            - write:group
+            - read:group
+  /group/findByChild:
+    get:
+      tags:
+        - group
+      summary: Find Group by child name
+      description: Provide the name of the group you want to get
+      operationId: findGroupByChild
+      parameters:
+        - name: child
+          in: query
+          description: Name of the group
+          required: true
+          explode: false
+          schema:
+            type: object
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid tag value
+      security:
+        - ipam_auth:
+            - write:group
+            - read:group 
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        id:
+          type: integer
+          format : int64
+          example: 8
+        address:
+          type: string
+          description: IP Address
+          example : 192.168.0.1
+        mask:
+          type: integer
+          format : int32
+          description: Address Mask
+        online:
+          type: boolean
+          description: Can it be ping ?
+        attribuated:
+          type: boolean
+          description: Is it assigned ?
+    Subnet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 4
+        first_address:
+          type: string
+          description: First Address of the range
+          example : 125.12.15.1
+        last_address:
+          type: string
+          description: Last Address of the range
+          example : 125.12.15.200
+        description:
+          type: string
+          description: Description of the range
+          example : This range is used for the SOE of Vannes site
+        mask:
+          type: integer
+          format : int32
+          description: Address Mask
+        reading_roles:
+          type: array
+          items:
+            type: string
+          example: ["admin","manager"]
+          description: List of roles that can see this range
+        writing_roles:
+          type: array
+          items:
+            type: string
+          example: ["admin","manager"]
+          description: List of roles that can edit this range
+        vlan_id:
+          type: integer
+          format: int64
+          description: Vlan ID of the range
+          example: 415
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 4
+        name:
+          type: string
+          description: Name of the group
+          example : France
+        parent:
+          type: object
+          description: Group parent
+          example : EMEA
+        content:
+          type: array
+          items:
+            type: object
+          description: list of group or range in this group
+          example: [Vannes, 10.150.120.0/28]
+        reading_roles:
+          type: array
+          items:
+            type: string
+          example: ["admin","manager"]
+          description: List of roles that can see this range
+        writing_roles:
+          type: array
+          items:
+            type: string
+          example: ["admin","manager"]
+          description: List of roles that can edit this range
+  securitySchemes:
+    ipam_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
