@@ -1,3 +1,8 @@
+"""Ce test ne fonctionne pas mais permet de se faire une idée d'à quoi ressemble un fichier test"""
+
+
+
+
 import requests
 import json
 from requests.structures import CaseInsensitiveDict
