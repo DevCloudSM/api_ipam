@@ -20,10 +20,69 @@ def test_delete(path:str='/', id:int=0) -> tuple[bool, dict]:
     test = requests.delete( f'http://localhost:5000{path}{id}', headers=headers)
     return (f'Code {test.status_code}', json.loads(test.text))
 
-# Test GET /group/findByName
-groupes = test_get('/group/findByName/', {'name':'Vannes'})[1]
-vannes = groupes[0]
-print(vannes)
+##### Tests Group
+
+# PATCH /group
+
+# POST /group
+
+# DELETE /group/{groupId}
+
+# GET /group/{groupId}
+try:
+    groupes = test_get('/group/1')[1]
+    vannes = groupes[0]
+    test = vannes == [1, 'Vannes']
+except Exception as e:
+    print(e)
+    test = False
+print(f'GET /group/{{groupId}} : {test}')
+
+# GET /group/findByName
+try:
+    groupes = test_get('/group/findByName/', {'name':'Vannes'})[1]
+    vannes = groupes[0]
+    test = vannes == [1, 'Vannes']
+except:
+    test = False
+print(f'GET /group : {test}')
+
+# GET /group/findByParent
+
+# GET /group/findByChild
+
+
+##### Tests Address
+
+# PATCH /address
+
+# POST /address
+
+# GET /address/findByAddress
+
+# GET /address/{addressId}
+
+# DELETE /address/{addressId}
+
+
+##### Tests Subnet
+
+# PATCH /subnet
+
+# POST /subnet
+
+# GET /subnet/findByAddress
+
+# GET /subnet/findByMask
+
+# GET /subnet/findByVlanid
+
+# GET /subnet/{subnetId}
+
+# DELETE /subnet/{subnetId}
+
+
+
 
 # Test PUT /medal
 #for couleur in ("bronze","silver"):

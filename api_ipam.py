@@ -18,12 +18,13 @@ def slash_group():
         return "<h2>PATCH group</h2>"
     return "<h1>GET Group</h1>"
 
-# Code à faire, dont il faut rédiger un test, dont le test ne fonctionne pas
+# Code fait !
 @api_ipam.route("/group/<int:groupId>", methods = ['GET','DELETE'])
 def slash_group_groupId(groupId):
     if request.method == 'DELETE':
         return f"<h2>DELETE Group n°{groupId}</h2>"
-    return f"<h1>GET Group n°{groupId}</h1>"
+    groupe = ps.get(['group'], 'id', groupId)
+    return jsonify(groupe)
 
 # Code fait !
 @api_ipam.route("/group/findByName/", methods = ['GET'])
