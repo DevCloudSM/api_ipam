@@ -6,22 +6,6 @@ identifiants = {'database':'ipam',
                 'host':'localhost',
                 'port':5432}
 
-def get_old(tables:list[str], identifiants:dict[str, str]=identifiants) -> list[tuple]:
-    with ps.connect(**identifiants) as connector:
-        with connector.cursor() as cursor:
-            if len(tables) == 1:
-                cursor.execute(f"""
-                               select * from public."{tables[0]}"
-                                """)
-            elif len(tables) == 2:
-                cursor.execute(f"""
-                               select * from public."{tables[0]}"
-                               inner join public."{tables[1]}" on public."{tables[0]}".{tables[1]}_id = public."{tables[1]}".id
-                               """)
-            else:
-                return [("Erreur")]
-            return cursor.fetchall()
-
 def get(tables:list[str], variable:str="", valeur:str="", identifiants:dict[str, str]=identifiants) -> list[tuple]:
     with ps.connect(**identifiants) as connector:
         with connector.cursor() as cursor:
