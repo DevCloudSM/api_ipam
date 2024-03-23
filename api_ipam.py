@@ -6,7 +6,7 @@ api_ipam = Flask(__name__)
 
 @api_ipam.route("/")
 def menu():
-    return front_ipam.menu()
+    return front_ipam.yaml()
 
 #Group
 # Code à faire, dont il faut rédiger un test, dont le test ne fonctionne pas

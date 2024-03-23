@@ -1,3 +1,4 @@
+from typing import Union
 import psycopg2 as ps
 
 identifiants = {'database':'ipam',
@@ -5,6 +6,15 @@ identifiants = {'database':'ipam',
                 'password':'bonjour',
                 'host':'localhost',
                 'port':5432}
+
+def format_sql(data:Union[str, int, list[str], list[int], bool]) -> str:
+    if type(data) == str:
+        return f"'{data}'"
+    if type(data) == list:
+        if len(data) == 0:
+            return
+        return f'ARRAY[{", ".join([format_sql(x) for x in data])}]'
+    return str(data)
 
 def get(tables:list[str], variable:str="", valeur:str="", identifiants:dict[str, str]=identifiants) -> list[tuple]:
     with ps.connect(**identifiants) as connector:
@@ -23,8 +33,9 @@ def put(table:str, data:dict[str,str], identifiants:dict[str, str]=identifiants)
     try:
         with ps.connect(**identifiants) as connector:
             with connector.cursor() as cursor:
+                """insert into public."IP_address" values (2, '192.168.11.4', 24, True, False)"""
                 cursor.execute(f"""
-                    insert into public."{table}" values ({", ".join([f"'{x}'" if type(x) == str else str(x) for x in data.values()])})
+                    insert into public."{table}" values ({", ".join([format_sql(x) for x in data.values()])})
                     """)
                 connector.commit()
                 return True
@@ -36,7 +47,7 @@ def delete(table:str, id:int, identifiants:dict[str, str]=identifiants) -> bool:
         with ps.connect(**identifiants) as connector:
             with connector.cursor() as cursor:
                 cursor.execute(f"""
-                                delete from public."IP_address" where id = {id}
+                                delete from public."{table}" where id = {id}
                                 """)
                 connector.commit()
                 return cursor.rowcount > 0
@@ -48,6 +59,12 @@ if __name__ == '__main__':
     print(get(["IP_address"]))
     print(get(["group"], 'name', 'Vannes'))
     print(put(table="IP_address", data={'id':6, 'address': "10.4.2.1"}))
-    print(delete("IP_address", 6))
+    print(delete("group", 1))
+    print(delete("group", 3))
     print(put("subnet", {'id':5, 'first@':'10.0.0.2', 'gp_id':1}))
-    print(put("group", {'id':1, 'name':'Vannes'}))
+    print(put("group", {'id':3, 
+                        'name':'Brest', 
+                        'p_id':1, 
+                        'c_ids':[1,4,6], 
+                        'r_r':['dl','sa'], 
+                        'w_r':['sa']}))
