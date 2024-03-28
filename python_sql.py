@@ -41,10 +41,9 @@ def put(table:str, data:dict[str,str], identifiants:dict[str, str]=identifiants)
     try:
         with ps.connect(**identifiants) as connector:
             with connector.cursor() as cursor:
-                """insert into public."IP_address" values (2, '192.168.11.4', 24, True, False)"""
                 cursor.execute(f"""
-                    insert into public."{table}" values ({", ".join([format_sql(x) for x in data.values()])})
-                    """)
+                                insert into public."{table}" values ({", ".join([format_sql(x) for x in data.values()])})
+                                """)
                 connector.commit()
                 return True
     except:
