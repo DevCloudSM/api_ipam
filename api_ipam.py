@@ -10,10 +10,12 @@ def menu():
 
 #Group
 # Code à faire, dont il faut rédiger un test, dont le test ne fonctionne pas
-@api_ipam.route("/group", methods = ['GET','POST','PATCH'])
+@api_ipam.route("/group/", methods = ['GET','POST','PATCH'])
 def slash_group():
     if request.method == 'POST':
-        return "<h2>POST group</h2>"
+        data = request.get_json()
+        succes = ps.put('group', data)
+        return jsonify({"succes":succes})
     if request.method == 'PATCH':
         return "<h2>PATCH group</h2>"
     return "<h1>GET Group</h1>"
@@ -22,7 +24,8 @@ def slash_group():
 @api_ipam.route("/group/<int:groupId>", methods = ['GET','DELETE'])
 def slash_group_groupId(groupId):
     if request.method == 'DELETE':
-        return f"<h2>DELETE Group n°{groupId}</h2>"
+        succes = ps.delete('group', groupId)
+        return jsonify({'succes':succes})
     groupe = ps.get(['group'], 'id', groupId)
     return jsonify(groupe)
 
