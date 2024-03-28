@@ -7,6 +7,14 @@ identifiants = {'database':'ipam',
                 'host':'localhost',
                 'port':5432}
 
+def log(message:str) -> bool:
+    try:
+        with open("log.txt","a",encoding="utf-8") as file:
+            file.write(message)
+        return True
+    except:
+        return False
+
 def format_sql(data:Union[str, int, list[str], list[int], bool]) -> str:
     if type(data) == str:
         return f"'{data}'"
