@@ -3,7 +3,7 @@ import json
 from requests.structures import CaseInsensitiveDict
 import traceback
 
-def test_patch(path:str='/', data:dict[str, str]= {}) -> tuple[bool, dict]:
+def test_patch(path:str='/', data:dict[str, str]= {}) -> tuple[str, dict]:
     try:
         headers = CaseInsensitiveDict()
         headers['Content-Type'] = 'application/json'
@@ -12,7 +12,7 @@ def test_patch(path:str='/', data:dict[str, str]= {}) -> tuple[bool, dict]:
     except:
         return traceback.print_exc()
 
-def test_get(path:str='/') -> tuple[bool, dict]:
+def test_get(path:str='/') -> tuple[str, dict]:
     try:
         headers = CaseInsensitiveDict()
         headers['Content-Type'] = 'application/json'
@@ -21,7 +21,7 @@ def test_get(path:str='/') -> tuple[bool, dict]:
     except:
         return traceback.print_exc()
 
-def test_delete(path:str='/', id:int=0) -> tuple[bool, dict]:
+def test_delete(path:str='/', id:int=0) -> tuple[str, dict]:
     try:
         headers = CaseInsensitiveDict()
         headers['Content-Type'] = 'application/json'
@@ -40,80 +40,122 @@ def test_post(path:str='/', data:dict[str, str]= {}) -> tuple[str, dict]:
         return traceback.print_exc()
 
 ##### Tests Group
+def test_group():
+    # POST /group
+    t_post = test_post('/group/', {'id':2,
+                                    'name':'Vannes',
+                                    'parent_id':1,
+                                    'content_ids':[1,2,3,4],
+                                    'reading_roles':['dsi_local', 'superadmin'],
+                                    'writing_roles':['superadmin']})
+    print(f'POST /group/ {{data}} : {t_post}')
 
-# POST /group
-t_post = test_post('/group/', {'id':2,
-                                'name':'Vannes',
-                                'parent_id':1,
-                                'content_ids':[1,2,3,4],
-                                'reading_roles':['dsi_local', 'superadmin'],
-                                'writing_roles':['superadmin']})
-print(f'POST /group/ {{data}} : {t_post}')
+    # PATCH /group
+    t_patch = test_patch('/group/2', {'id':2,
+                                    'name':'Vannes',
+                                    'parent_id':1,
+                                    'content_ids':[5,6,7,8],
+                                    'reading_roles':['dsi_local', 'superadmin'],
+                                    'writing_roles':['superadmin']})
+    print(f'PATCH /group/{{groupId}} {{data}} : {t_patch}')
 
-# PATCH /group
+    # GET /group/{groupId}
+    t_get = test_get('/group/2')
+    print(f'GET /group/{{groupId}} : {t_get}')
 
-# GET /group/{groupId}
-t_get = test_get('/group/2')
-print(f'GET /group/{{groupId}} : {t_get}')
+    # GET /group/findByName
+    t_get_findbyName = test_get('/group/findByName?name=Vannes')
+    print(f'GET /group/findByName?name=Vannes : {t_get_findbyName}')
 
-# GET /group/findByName
-try:
-    groupes = test_get('/group/findByName?name=Vannes')[1]
-    vannes = groupes[0]
-    test = vannes == [1, 'Vannes']
-except:
-    test = False
-print(f'GET /group : {test}')
+    # GET /group/findByParent
+    t_get_findbyParent = test_get('/group/findByParent?parent=1')
+    print(f'GET /group/findByParent?parent=1 : {t_get_findbyParent}')
 
-# GET /group/findByParent
+    # GET /group/findByChild
+    t_get_findbyChild = test_get('/group/findByChild?child=6')
+    print(f'GET /group/findByChild?child=6 : {t_get_findbyChild}')
 
-# GET /group/findByChild
-
-# DELETE /group/{groupId}
-try:
+    # DELETE /group/{groupId}
     t_delete = test_delete('/group/', 2)
     print(f'DELETE /group/id : {t_delete}')
-except Exception as e:
-    traceback.print_exc()
 
 ##### Tests Address
+def test_address():
+    # POST /address
+    t_post = test_post('/address/', {'id':4,
+                                    'address':'10.0.0.1',
+                                    'mask':25,
+                                    'online':False,
+                                    'attribuated':True})
+    print(f'POST /address/ {{data}} : {t_post}')
+    # PATCH /address
+    t_patch = test_patch('/address/4', {'id':4,
+                                    'address':'10.0.0.2',
+                                    'mask':24,
+                                    'online':True,
+                                    'attribuated':True})
+    print(f'PATCH /address/{{addressId}} {{data}} : {t_patch}')
 
-# PATCH /address
+    # GET /address/findByAddress
+    t_get_findByAddress = test_get('/group/findByAddress?address=10.0.0.2')
+    print(f'GET /group/findByAddress?address=10.0.0.2 : {t_get_findByAddress}')
 
-# POST /address
+    # GET /address/{addressId}
+    t_get = test_get('/address/2')
+    print(f'GET /address/{{addressId}} : {t_get}')
 
-# GET /address/findByAddress
-
-# GET /address/{addressId}
-
-# DELETE /address/{addressId}
-
+    # DELETE /address/{addressId}
+    t_delete = test_delete('/address/', 2)
+    print(f'DELETE /address/id : {t_delete}')
 
 ##### Tests Subnet
+def test_subnet():
+    # POST /subnet
+    t_post = test_post('/subnet/',{'id':7,
+                                    '1st_address':'10.0.0.0',
+                                    'last_address':'10.0.0.4',
+                                    'description':"Range Wifi de Brest",
+                                    'mask':32,
+                                    'reading_roles':["dsi_local","superadmin"],
+                                    'writing_roles':["superadmin"],
+                                    'group_id':3})
+    print(f'POST /subnet/ {{data}} : {t_post}')
 
-# PATCH /subnet
+    # PATCH /subnet
+    t_patch = test_post('/subnet/7',{'id':7,
+                                    '1st_address':'10.0.0.0',
+                                    'last_address':'10.0.0.4',
+                                    'description':"Range Wifi de Vannes",
+                                    'mask':32,
+                                    'reading_roles':["dsi_local","superadmin"],
+                                    'writing_roles':["superadmin"],
+                                    'group_id':3})
+    print(f'PATCH /subnet/{{subnetId}} {{data}} : {t_patch}')
 
-# POST /subnet
+    # GET /subnet/findByAddress
+    t_get_findByAddress = test_get('/subnet/findByAddress?address=10.0.0.2')
+    print(f'GET /subnet/findByAddress?address=10.0.0.2 : {t_get_findByAddress}')
 
-# GET /subnet/findByAddress
+    # GET /subnet/findByMask
+    t_get_findByAddress = test_get('/subnet/findByMask?mask=32')
+    print(f'GET /subnet/findByMask?mask=32 : {t_get_findByAddress}')
 
-# GET /subnet/findByMask
+    # GET /subnet/findByVlanid
+    t_get_findByAddress = test_get('/subnet/findByVlanid?vlanid=3')
+    print(f'GET /subnet/findByAddress?vlanid=3 : {t_get_findByAddress}')
 
-# GET /subnet/findByVlanid
+    # GET /subnet/{subnetId}
+    t_get = test_get('/subnet/7')
+    print(f'GET /subnet/{{subnetId}} : {t_get}')
 
-# GET /subnet/{subnetId}
+    # DELETE /subnet/{subnetId}
+    t_delete = test_delete('/subnet/', 7)
+    print(f'DELETE /subnet/id : {t_delete}')
 
-# DELETE /subnet/{subnetId}
-
-
-
-
-# Test PUT /medal
-#for couleur in ("bronze","silver"):
-#    print(test_put('/medal/', {
-#                    "medal_id": 1,
-#                    "year": 2004,
-#                    "color": couleur,
-#                    "athlete_id": 14,
-#                    "sport_id": 37
-#                    }))
+if __name__ == '__main__':
+    print("Test Address".center(34, '='))
+    test_address()
+    print("Test Group".center(34, '='))
+    test_group()
+    print("Test Subnet".center(34, '='))
+    test_subnet()
